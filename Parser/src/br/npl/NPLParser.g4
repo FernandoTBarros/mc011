@@ -27,6 +27,8 @@ options {
                          }
 	/** Map variable name to Integer object holding value */
 	HashMap<String,Noticia> noticias = new HashMap<String,Noticia>();
+	//Guarda a estrutura das noticias, um vetor de listas
+        List[] estruturaNoticias;
         
         StringBuffer html = new StringBuffer();
 }
@@ -59,10 +61,7 @@ content
                                         html.append("<div id=\"linkbar\"></div>");
                                         }
                 noticia*                        
-		FECHA_CHAVE             { 
-                                        html.append("</div>\n"); 
-                                        html.append("</div>\n");
-                                        }
+		FECHA_CHAVE             { html.append("</div>\n"); }
 	;
 
 newspaper returns [String titulo, String data]
@@ -95,36 +94,80 @@ noticia returns [Noticia instance]
 	;
 	
 structure
-	:	STRUCTURE OPEN_CHAVE
+	:	STRUCTURE OPEN_CHAVE                { html.append("<div id=\"left\">\n"); }
 	 	format
 	 	item*
-	 	FECHA_CHAVE
+	 	FECHA_CHAVE                         { 
+                                                        if(estruturaNoticias[1].size()>0)
+                                                        {
+                                                            html.append("<div id=\"sub_left\"> \n");
+                                                        
+                                                        for (Noticia n : (ArrayList<Noticia>)estruturaNoticias[1])
+                                                        {
+                                                         if(n.titulo!=null) { html.append("<h3> " + n.titulo + " </h3>\n"); }
+                                                         if(n.resumo!=null) { html.append("<p> " + n.resumo + " </p>\n"); }
+                                                         if(n.imagem!=null) { html.append("<img src=\"" + n.imagem + "\"/>\n"); }
+                                                         if(n.fonte!=null) { html.append("<h6> " + n.fonte + " </h6>\n"); }
+                                                         if(n.autor!=null) { html.append("<h5> " + n.autor + " </h5>\n"); }
+                                                         if(n.texto!=null) { html.append("<p> " + n.texto + " </p>\n"); }
+                                                         }
+                                                         html.append("</div> \n");
+                                                        }
+                                                          if(estruturaNoticias[2].size()>0)
+                                                        {
+                                                            html.append("<div id=\"sub_content\"> \n");
+                                                        
+                                                        for (Noticia n : (ArrayList<Noticia>)estruturaNoticias[2])
+                                                        {
+                                                         if(n.titulo!=null) { html.append("<h3> " + n.titulo + " </h3>\n"); }
+                                                         if(n.resumo!=null) { html.append("<p> " + n.resumo + " </p>\n"); }
+                                                         if(n.imagem!=null) { html.append("<img src=\"" + n.imagem + "\"/>\n"); }
+                                                         if(n.fonte!=null) { html.append("<h6> " + n.fonte + " </h6>\n"); }
+                                                         if(n.autor!=null) { html.append("<h5> " + n.autor + " </h5>\n"); }
+                                                         if(n.texto!=null) { html.append("<p> " + n.texto + " </p>\n"); }
+                                                         }
+                                                         html.append("</div> \n");
+                                                        }
+                                                    }
+                                         
 	;
 
 format
 	:	FORMAT OPEN_CHAVE
-		COL INTEGER
-		BORDER INTEGER
-		FECHA_CHAVE
+		COL coluna=INTEGER
+		BORDER borda=INTEGER
+		FECHA_CHAVE                         
+                                                    { 
+                                                     int tamColuna = Integer.parseInt($coluna.text);
+                                                    estruturaNoticias = new List[tamColuna];
+                                                        for(int i=0; i < tamColuna; i++)
+                                                        {
+                                                        estruturaNoticias[i] = new ArrayList();
+                                                        }
+                                                    }
 	;
 
 item
 	:	ITEM OPEN_BRACKET
-		INTEGER
-		(DOIS_PONTOS INTEGER)?
-		FECHA_BRACKET
+		rangeInicial=INTEGER
+		(DOIS_PONTOS rangeFinal=INTEGER)?
+		FECHA_BRACKET                       
 		OPEN_CHAVE
 	(
-                key=NOME_NOTICIA		{ Noticia noticia = noticias.get($key.text); }
+                key=NOME_NOTICIA                    { 
+                                                     Noticia noticia = noticias.get($key.text); 
+                                                     Noticia noticiaEstrutura = new Noticia(); 
+                                                     estruturaNoticias[Integer.parseInt($rangeInicial.text)].add(noticiaEstrutura);
+                                                     }
                 PONTO
                 (
-                (TITLE)    |                    
-                (ABSTRACT) |                    
-                (IMAGE)    |
-        	(SOURCE)   |
-        	(AUTHOR)   |
-        	(TEXT_TOKEN)
+                (TITLE)                            { noticiaEstrutura.titulo = noticia.titulo; }
+        |       (ABSTRACT)                         { noticiaEstrutura.resumo = noticia.resumo; }
+        |       (IMAGE)                            { noticiaEstrutura.imagem = noticia.imagem; }
+        |	(SOURCE)                           { noticiaEstrutura.fonte = noticia.fonte; }
+        |	(AUTHOR)                           { noticiaEstrutura.autor = noticia.autor; }
+        |	(TEXT_TOKEN)                       { noticiaEstrutura.texto = noticia.texto; }
                 )
-        )*
+        )*                                         
 		FECHA_CHAVE
 	;

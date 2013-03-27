@@ -3,7 +3,7 @@ lexer grammar NPLLexer;
          package br.npl;
  }
 
-TEXT:  '"' ( EscapeSequence | ~('\\'|'"') )* '"';
+TEXT:  '"' ( EscapeSequence | ~('\\'|'"') )* '"' {setText(getText().substring(1, getText().length()-1));} ;
 fragment EscapeSequence: '\\' ('\"');
 WS: [ \r\t\u000C\n]+ -> skip;
 INTEGER:    [0-9]+;

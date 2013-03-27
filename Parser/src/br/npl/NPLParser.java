@@ -1,4 +1,4 @@
-// Generated from C:\Users\MRE004\Google Drive\Unicamp\mc011\Parser\src\br\npl\NPLParser.g4 by ANTLR 4.0
+// Generated from C:\Users\MRE004\git\mc011\Parser\src\br\npl\NPLParser.g4 by ANTLR 4.0
 
     package br.npl;
     
@@ -63,6 +63,8 @@ public class NPLParser extends Parser {
 	                         }
 		/** Map variable name to Integer object holding value */
 		HashMap<String,Noticia> noticias = new HashMap<String,Noticia>();
+		//Guarda a estrutura das noticias, um vetor de listas
+	        List[] estruturaNoticias;
 	        
 	        StringBuffer html = new StringBuffer();
 
@@ -225,10 +227,7 @@ public class NPLParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(41); match(FECHA_CHAVE);
-			 
-			                                        html.append("</div>\n"); 
-			                                        html.append("</div>\n");
-			                                        
+			 html.append("</div>\n"); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -281,7 +280,7 @@ public class NPLParser extends Parser {
 			setState(47); match(TITLE);
 			setState(48); match(DOIS_PONTOS);
 			setState(49); ((NewspaperContext)_localctx).TEXT = match(TEXT);
-			((NewspaperContext)_localctx).titulo =  (((NewspaperContext)_localctx).TEXT!=null?((NewspaperContext)_localctx).TEXT.getText():null); html.append("<title>" + _localctx.titulo + "</title>"); 
+			((NewspaperContext)_localctx).titulo =  (((NewspaperContext)_localctx).TEXT!=null?((NewspaperContext)_localctx).TEXT.getText():null); html.append("<title>" + _localctx.titulo + "</title>\n"); 
 			setState(54);
 			_la = _input.LA(1);
 			if (_la==DATE) {
@@ -490,21 +489,54 @@ public class NPLParser extends Parser {
 			{
 			setState(97); match(STRUCTURE);
 			setState(98); match(OPEN_CHAVE);
-			setState(99); format();
-			setState(103);
+			 html.append("<div id=\"left\">\n"); 
+			setState(100); format();
+			setState(104);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==ITEM) {
 				{
 				{
-				setState(100); item();
+				setState(101); item();
 				}
 				}
-				setState(105);
+				setState(106);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(106); match(FECHA_CHAVE);
+			setState(107); match(FECHA_CHAVE);
+			 
+			                                                        if(estruturaNoticias[1].size()>0)
+			                                                        {
+			                                                            html.append("<div id=\"sub_left\"> \n");
+			                                                        
+			                                                        for (Noticia n : (ArrayList<Noticia>)estruturaNoticias[1])
+			                                                        {
+			                                                         if(n.titulo!=null) { html.append("<h3> " + n.titulo + " </h3>\n"); }
+			                                                         if(n.resumo!=null) { html.append("<p> " + n.resumo + " </p>\n"); }
+			                                                         if(n.imagem!=null) { html.append("<img src=\"" + n.imagem + "\"/>\n"); }
+			                                                         if(n.fonte!=null) { html.append("<h6> " + n.fonte + " </h6>\n"); }
+			                                                         if(n.autor!=null) { html.append("<h5> " + n.autor + " </h5>\n"); }
+			                                                         if(n.texto!=null) { html.append("<p> " + n.texto + " </p>\n"); }
+			                                                         }
+			                                                         html.append("</div> \n");
+			                                                        }
+			                                                          if(estruturaNoticias[2].size()>0)
+			                                                        {
+			                                                            html.append("<div id=\"sub_content\"> \n");
+			                                                        
+			                                                        for (Noticia n : (ArrayList<Noticia>)estruturaNoticias[2])
+			                                                        {
+			                                                         if(n.titulo!=null) { html.append("<h3> " + n.titulo + " </h3>\n"); }
+			                                                         if(n.resumo!=null) { html.append("<p> " + n.resumo + " </p>\n"); }
+			                                                         if(n.imagem!=null) { html.append("<img src=\"" + n.imagem + "\"/>\n"); }
+			                                                         if(n.fonte!=null) { html.append("<h6> " + n.fonte + " </h6>\n"); }
+			                                                         if(n.autor!=null) { html.append("<h5> " + n.autor + " </h5>\n"); }
+			                                                         if(n.texto!=null) { html.append("<p> " + n.texto + " </p>\n"); }
+			                                                         }
+			                                                         html.append("</div> \n");
+			                                                        }
+			                                                    
 			}
 		}
 		catch (RecognitionException re) {
@@ -519,6 +551,8 @@ public class NPLParser extends Parser {
 	}
 
 	public static class FormatContext extends ParserRuleContext {
+		public Token coluna;
+		public Token borda;
 		public List<TerminalNode> INTEGER() { return getTokens(NPLParser.INTEGER); }
 		public TerminalNode FECHA_CHAVE() { return getToken(NPLParser.FECHA_CHAVE, 0); }
 		public TerminalNode FORMAT() { return getToken(NPLParser.FORMAT, 0); }
@@ -540,13 +574,21 @@ public class NPLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(108); match(FORMAT);
-			setState(109); match(OPEN_CHAVE);
-			setState(110); match(COL);
-			setState(111); match(INTEGER);
-			setState(112); match(BORDER);
-			setState(113); match(INTEGER);
-			setState(114); match(FECHA_CHAVE);
+			setState(110); match(FORMAT);
+			setState(111); match(OPEN_CHAVE);
+			setState(112); match(COL);
+			setState(113); ((FormatContext)_localctx).coluna = match(INTEGER);
+			setState(114); match(BORDER);
+			setState(115); ((FormatContext)_localctx).borda = match(INTEGER);
+			setState(116); match(FECHA_CHAVE);
+			 
+			                                                     int tamColuna = Integer.parseInt((((FormatContext)_localctx).coluna!=null?((FormatContext)_localctx).coluna.getText():null));
+			                                                    estruturaNoticias = new List[tamColuna];
+			                                                        for(int i=0; i < tamColuna; i++)
+			                                                        {
+			                                                        estruturaNoticias[i] = new ArrayList();
+			                                                        }
+			                                                    
 			}
 		}
 		catch (RecognitionException re) {
@@ -561,6 +603,8 @@ public class NPLParser extends Parser {
 	}
 
 	public static class ItemContext extends ParserRuleContext {
+		public Token rangeInicial;
+		public Token rangeFinal;
 		public Token key;
 		public List<TerminalNode> AUTHOR() { return getTokens(NPLParser.AUTHOR); }
 		public TerminalNode ABSTRACT(int i) {
@@ -617,71 +661,81 @@ public class NPLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(116); match(ITEM);
-			setState(117); match(OPEN_BRACKET);
-			setState(118); match(INTEGER);
-			setState(121);
+			setState(119); match(ITEM);
+			setState(120); match(OPEN_BRACKET);
+			setState(121); ((ItemContext)_localctx).rangeInicial = match(INTEGER);
+			setState(124);
 			_la = _input.LA(1);
 			if (_la==DOIS_PONTOS) {
 				{
-				setState(119); match(DOIS_PONTOS);
-				setState(120); match(INTEGER);
+				setState(122); match(DOIS_PONTOS);
+				setState(123); ((ItemContext)_localctx).rangeFinal = match(INTEGER);
 				}
 			}
 
-			setState(123); match(FECHA_BRACKET);
-			setState(124); match(OPEN_CHAVE);
-			setState(138);
+			setState(126); match(FECHA_BRACKET);
+			setState(127); match(OPEN_CHAVE);
+			setState(147);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==NOME_NOTICIA) {
 				{
 				{
-				setState(125); ((ItemContext)_localctx).key = match(NOME_NOTICIA);
-				 Noticia noticia = noticias.get((((ItemContext)_localctx).key!=null?((ItemContext)_localctx).key.getText():null)); 
-				setState(127); match(PONTO);
-				setState(134);
+				setState(128); ((ItemContext)_localctx).key = match(NOME_NOTICIA);
+				 
+				                                                     Noticia noticia = noticias.get((((ItemContext)_localctx).key!=null?((ItemContext)_localctx).key.getText():null)); 
+				                                                     Noticia noticiaEstrutura = new Noticia(); 
+				                                                     estruturaNoticias[Integer.parseInt((((ItemContext)_localctx).rangeInicial!=null?((ItemContext)_localctx).rangeInicial.getText():null))].add(noticiaEstrutura);
+				                                                     
+				setState(130); match(PONTO);
+				setState(143);
 				switch (_input.LA(1)) {
 				case TITLE:
 					{
 					{
-					setState(128); match(TITLE);
+					setState(131); match(TITLE);
 					}
+					 noticiaEstrutura.titulo = noticia.titulo; 
 					}
 					break;
 				case ABSTRACT:
 					{
 					{
-					setState(129); match(ABSTRACT);
+					setState(133); match(ABSTRACT);
 					}
+					 noticiaEstrutura.resumo = noticia.resumo; 
 					}
 					break;
 				case IMAGE:
 					{
 					{
-					setState(130); match(IMAGE);
+					setState(135); match(IMAGE);
 					}
+					 noticiaEstrutura.imagem = noticia.imagem; 
 					}
 					break;
 				case SOURCE:
 					{
 					{
-					setState(131); match(SOURCE);
+					setState(137); match(SOURCE);
 					}
+					 noticiaEstrutura.fonte = noticia.fonte; 
 					}
 					break;
 				case AUTHOR:
 					{
 					{
-					setState(132); match(AUTHOR);
+					setState(139); match(AUTHOR);
 					}
+					 noticiaEstrutura.autor = noticia.autor; 
 					}
 					break;
 				case TEXT_TOKEN:
 					{
 					{
-					setState(133); match(TEXT_TOKEN);
+					setState(141); match(TEXT_TOKEN);
 					}
+					 noticiaEstrutura.texto = noticia.texto; 
 					}
 					break;
 				default:
@@ -689,11 +743,11 @@ public class NPLParser extends Parser {
 				}
 				}
 				}
-				setState(140);
+				setState(149);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(141); match(FECHA_CHAVE);
+			setState(150); match(FECHA_CHAVE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -708,44 +762,47 @@ public class NPLParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\2\3\35\u0092\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b"+
+		"\2\3\35\u009b\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b"+
 		"\4\t\t\t\3\2\7\2\24\n\2\f\2\16\2\27\13\2\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3"+
 		"\3\3\3\3\4\3\4\3\4\3\4\3\4\7\4\'\n\4\f\4\16\4*\13\4\3\4\3\4\3\4\3\5\3"+
 		"\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\59\n\5\3\5\3\5\3\5\3\5\3\6\3\6\3"+
 		"\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6"+
 		"\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\7\6\\\n\6\f\6\16\6_\13\6\3\6\3\6"+
-		"\3\6\3\7\3\7\3\7\3\7\7\7h\n\7\f\7\16\7k\13\7\3\7\3\7\3\b\3\b\3\b\3\b\3"+
-		"\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\5\t|\n\t\3\t\3\t\3\t\3\t\3\t\3\t\3"+
-		"\t\3\t\3\t\3\t\3\t\5\t\u0089\n\t\7\t\u008b\n\t\f\t\16\t\u008e\13\t\3\t"+
-		"\3\t\3\t\2\n\2\4\6\b\n\f\16\20\2\3\4\4\4\35\35\u009a\2\25\3\2\2\2\4\34"+
-		"\3\2\2\2\6!\3\2\2\2\b.\3\2\2\2\n>\3\2\2\2\fc\3\2\2\2\16n\3\2\2\2\20v\3"+
-		"\2\2\2\22\24\t\2\2\2\23\22\3\2\2\2\24\27\3\2\2\2\25\23\3\2\2\2\25\26\3"+
-		"\2\2\2\26\30\3\2\2\2\27\25\3\2\2\2\30\31\5\4\3\2\31\32\7\t\2\2\32\33\b"+
-		"\2\1\2\33\3\3\2\2\2\34\35\7\b\2\2\35\36\b\3\1\2\36\37\5\6\4\2\37 \5\f"+
-		"\7\2 \5\3\2\2\2!\"\7\13\2\2\"#\7\6\2\2#$\5\b\5\2$(\b\4\1\2%\'\5\n\6\2"+
-		"&%\3\2\2\2\'*\3\2\2\2(&\3\2\2\2()\3\2\2\2)+\3\2\2\2*(\3\2\2\2+,\7\7\2"+
-		"\2,-\b\4\1\2-\7\3\2\2\2./\7\n\2\2/\60\7\6\2\2\60\61\b\5\1\2\61\62\7\16"+
-		"\2\2\62\63\7\32\2\2\63\64\7\3\2\2\648\b\5\1\2\65\66\7\r\2\2\66\67\7\32"+
-		"\2\2\679\7\3\2\28\65\3\2\2\289\3\2\2\29:\3\2\2\2:;\b\5\1\2;<\7\7\2\2<"+
-		"=\b\5\1\2=\t\3\2\2\2>?\b\6\1\2?@\7\34\2\2@A\7\6\2\2A]\b\6\1\2BC\7\16\2"+
-		"\2CD\7\32\2\2D\\\7\3\2\2EF\b\6\1\2FG\7\17\2\2GH\7\32\2\2H\\\7\3\2\2IJ"+
-		"\b\6\1\2JK\7\20\2\2KL\7\32\2\2L\\\7\3\2\2MN\b\6\1\2NO\7\23\2\2OP\7\32"+
-		"\2\2P\\\7\3\2\2QR\b\6\1\2RS\7\22\2\2ST\7\32\2\2T\\\7\3\2\2UV\b\6\1\2V"+
-		"W\7\21\2\2WX\7\32\2\2XY\7\3\2\2YZ\3\2\2\2Z\\\b\6\1\2[B\3\2\2\2[E\3\2\2"+
-		"\2[I\3\2\2\2[M\3\2\2\2[Q\3\2\2\2[U\3\2\2\2\\_\3\2\2\2][\3\2\2\2]^\3\2"+
-		"\2\2^`\3\2\2\2_]\3\2\2\2`a\7\7\2\2ab\b\6\1\2b\13\3\2\2\2cd\7\f\2\2de\7"+
-		"\6\2\2ei\5\16\b\2fh\5\20\t\2gf\3\2\2\2hk\3\2\2\2ig\3\2\2\2ij\3\2\2\2j"+
-		"l\3\2\2\2ki\3\2\2\2lm\7\7\2\2m\r\3\2\2\2no\7\24\2\2op\7\6\2\2pq\7\25\2"+
-		"\2qr\7\5\2\2rs\7\26\2\2st\7\5\2\2tu\7\7\2\2u\17\3\2\2\2vw\7\27\2\2wx\7"+
-		"\30\2\2x{\7\5\2\2yz\7\32\2\2z|\7\5\2\2{y\3\2\2\2{|\3\2\2\2|}\3\2\2\2}"+
-		"~\7\31\2\2~\u008c\7\6\2\2\177\u0080\7\34\2\2\u0080\u0081\b\t\1\2\u0081"+
-		"\u0088\7\33\2\2\u0082\u0089\7\16\2\2\u0083\u0089\7\17\2\2\u0084\u0089"+
-		"\7\20\2\2\u0085\u0089\7\23\2\2\u0086\u0089\7\22\2\2\u0087\u0089\7\21\2"+
-		"\2\u0088\u0082\3\2\2\2\u0088\u0083\3\2\2\2\u0088\u0084\3\2\2\2\u0088\u0085"+
-		"\3\2\2\2\u0088\u0086\3\2\2\2\u0088\u0087\3\2\2\2\u0089\u008b\3\2\2\2\u008a"+
-		"\177\3\2\2\2\u008b\u008e\3\2\2\2\u008c\u008a\3\2\2\2\u008c\u008d\3\2\2"+
-		"\2\u008d\u008f\3\2\2\2\u008e\u008c\3\2\2\2\u008f\u0090\7\7\2\2\u0090\21"+
-		"\3\2\2\2\13\25(8[]i{\u0088\u008c";
+		"\3\6\3\7\3\7\3\7\3\7\3\7\7\7i\n\7\f\7\16\7l\13\7\3\7\3\7\3\7\3\b\3\b\3"+
+		"\b\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\5\t\177\n\t\3\t\3\t\3\t"+
+		"\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\t\u0092\n\t"+
+		"\7\t\u0094\n\t\f\t\16\t\u0097\13\t\3\t\3\t\3\t\2\n\2\4\6\b\n\f\16\20\2"+
+		"\3\4\4\4\35\35\u00a3\2\25\3\2\2\2\4\34\3\2\2\2\6!\3\2\2\2\b.\3\2\2\2\n"+
+		">\3\2\2\2\fc\3\2\2\2\16p\3\2\2\2\20y\3\2\2\2\22\24\t\2\2\2\23\22\3\2\2"+
+		"\2\24\27\3\2\2\2\25\23\3\2\2\2\25\26\3\2\2\2\26\30\3\2\2\2\27\25\3\2\2"+
+		"\2\30\31\5\4\3\2\31\32\7\t\2\2\32\33\b\2\1\2\33\3\3\2\2\2\34\35\7\b\2"+
+		"\2\35\36\b\3\1\2\36\37\5\6\4\2\37 \5\f\7\2 \5\3\2\2\2!\"\7\13\2\2\"#\7"+
+		"\6\2\2#$\5\b\5\2$(\b\4\1\2%\'\5\n\6\2&%\3\2\2\2\'*\3\2\2\2(&\3\2\2\2("+
+		")\3\2\2\2)+\3\2\2\2*(\3\2\2\2+,\7\7\2\2,-\b\4\1\2-\7\3\2\2\2./\7\n\2\2"+
+		"/\60\7\6\2\2\60\61\b\5\1\2\61\62\7\16\2\2\62\63\7\32\2\2\63\64\7\3\2\2"+
+		"\648\b\5\1\2\65\66\7\r\2\2\66\67\7\32\2\2\679\7\3\2\28\65\3\2\2\289\3"+
+		"\2\2\29:\3\2\2\2:;\b\5\1\2;<\7\7\2\2<=\b\5\1\2=\t\3\2\2\2>?\b\6\1\2?@"+
+		"\7\34\2\2@A\7\6\2\2A]\b\6\1\2BC\7\16\2\2CD\7\32\2\2D\\\7\3\2\2EF\b\6\1"+
+		"\2FG\7\17\2\2GH\7\32\2\2H\\\7\3\2\2IJ\b\6\1\2JK\7\20\2\2KL\7\32\2\2L\\"+
+		"\7\3\2\2MN\b\6\1\2NO\7\23\2\2OP\7\32\2\2P\\\7\3\2\2QR\b\6\1\2RS\7\22\2"+
+		"\2ST\7\32\2\2T\\\7\3\2\2UV\b\6\1\2VW\7\21\2\2WX\7\32\2\2XY\7\3\2\2YZ\3"+
+		"\2\2\2Z\\\b\6\1\2[B\3\2\2\2[E\3\2\2\2[I\3\2\2\2[M\3\2\2\2[Q\3\2\2\2[U"+
+		"\3\2\2\2\\_\3\2\2\2][\3\2\2\2]^\3\2\2\2^`\3\2\2\2_]\3\2\2\2`a\7\7\2\2"+
+		"ab\b\6\1\2b\13\3\2\2\2cd\7\f\2\2de\7\6\2\2ef\b\7\1\2fj\5\16\b\2gi\5\20"+
+		"\t\2hg\3\2\2\2il\3\2\2\2jh\3\2\2\2jk\3\2\2\2km\3\2\2\2lj\3\2\2\2mn\7\7"+
+		"\2\2no\b\7\1\2o\r\3\2\2\2pq\7\24\2\2qr\7\6\2\2rs\7\25\2\2st\7\5\2\2tu"+
+		"\7\26\2\2uv\7\5\2\2vw\7\7\2\2wx\b\b\1\2x\17\3\2\2\2yz\7\27\2\2z{\7\30"+
+		"\2\2{~\7\5\2\2|}\7\32\2\2}\177\7\5\2\2~|\3\2\2\2~\177\3\2\2\2\177\u0080"+
+		"\3\2\2\2\u0080\u0081\7\31\2\2\u0081\u0095\7\6\2\2\u0082\u0083\7\34\2\2"+
+		"\u0083\u0084\b\t\1\2\u0084\u0091\7\33\2\2\u0085\u0086\7\16\2\2\u0086\u0092"+
+		"\b\t\1\2\u0087\u0088\7\17\2\2\u0088\u0092\b\t\1\2\u0089\u008a\7\20\2\2"+
+		"\u008a\u0092\b\t\1\2\u008b\u008c\7\23\2\2\u008c\u0092\b\t\1\2\u008d\u008e"+
+		"\7\22\2\2\u008e\u0092\b\t\1\2\u008f\u0090\7\21\2\2\u0090\u0092\b\t\1\2"+
+		"\u0091\u0085\3\2\2\2\u0091\u0087\3\2\2\2\u0091\u0089\3\2\2\2\u0091\u008b"+
+		"\3\2\2\2\u0091\u008d\3\2\2\2\u0091\u008f\3\2\2\2\u0092\u0094\3\2\2\2\u0093"+
+		"\u0082\3\2\2\2\u0094\u0097\3\2\2\2\u0095\u0093\3\2\2\2\u0095\u0096\3\2"+
+		"\2\2\u0096\u0098\3\2\2\2\u0097\u0095\3\2\2\2\u0098\u0099\7\7\2\2\u0099"+
+		"\21\3\2\2\2\13\25(8[]j~\u0091\u0095";
 	public static final ATN _ATN =
 		ATNSimulator.deserialize(_serializedATN.toCharArray());
 	static {
