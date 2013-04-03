@@ -121,8 +121,31 @@ O presidente nacional do PSDB, senador Sérgio Guerra (PSDB-PE), afirmou neste d
 		precisa renunciar momentaneamente a outros direitos, como o de dirigir veículos automotores ou operar máquinas pesadas, 
 		posto que fazê-lo com reflexos e capacidade de decisão diminuídos pelo álcool representa um risco para terceiros."
 		
+		text: "Durante minhas breves semanas de descanso, alguns leitores me escreveram \"encomendando\" 
+		artigos sobre a lei seca e o caso Daniel Dantas. Para não descontentar ninguém, arrisco uma manobra temerária: 
+		vou comentar os dois assuntos valendo-me de uma mesma chave interpretativa que me parece especialmente valiosa 
+		para entender o Brasil de hoje. Comecemos pela lei seca.
+		Como ferrenho entusiasta daquilo que se convencionou chamar de liberdades, defendo até as últimas consequências
+		 o direito das pessoas de embriagar-se, drogar-se e fazer tudo o que bem entenderem com seus próprios corpos e mentes. 
+		Ainda assim, o conceito por trás da lei seca é inatacável: você tem o direito de beber até cair; mas, para tanto, 
+		precisa renunciar momentaneamente a outros direitos, como o de dirigir veículos automotores ou operar máquinas pesadas, 
+		posto que fazê-lo com reflexos e capacidade de decisão diminuídos pelo álcool representa um risco para terceiros."
+		
 		author: "Hélio Schwartsman"
 		
+	}
+	
+	coluna32{
+		title: "O que não sabemos que não sabemos"
+		image: "./sergio.jpg"
+		abstract: "Frase antológica outro dia do ministro da Justiça, Tarso Genro, lembrou outra frase, 
+		brilhante, de Donald Rumsfeld, o ex-secretário da Defesa de George W. Bush. Primeiro, a frase de Rummy, 
+		falando sobre os perigos da ameaça terrorista contra os EUA: \"Há coisas que sabemos que sabemos. 
+		E há desconhecidos conhecidos. Quer dizer, há coisas que sabemos que não sabemos. 
+		Mas há ainda desconhecidos desconhecidos. Há coisas que não sabemos que não sabemos. \" 
+		O maior perigo estará sempre nos \"desconhecidos desconhecidos\", 
+		de onde surgem coisas como os aviões do 11 de Setembro se chocando contra as torres de Nova York."
+		author: "Sérgio Malbergier"
 	}
 }
 
@@ -131,7 +154,15 @@ structure {
 		col: 3 //  número de colunas do jornal
 		border: 0 //Largura da borda entre colunas
 	}
-		
+	
+	titleslide{
+		headline1
+		headline2
+		Noticia3
+		coluna31
+		coluna32
+	}
+	
 	//define um item que ocupará espaço da coluna 1 até a coluna 4 (4 colunas).
 	item[1:2]{
 		headline1.title	//Mostra o campo title do objeto headline1 neste item
@@ -158,6 +189,13 @@ structure {
 		coluna31.title
 		coluna31.image
 		coluna31.abstract
+		coluna31.author
+	}
+	item[3]{
+		coluna32.title
+		coluna32.image
+		coluna32.abstract
+		coluna32.author
 	}
 
 }

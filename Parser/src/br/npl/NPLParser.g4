@@ -33,6 +33,8 @@ options {
 	HashMap<String,Noticia> noticias = new HashMap<String,Noticia>();
 	//Guarda a estrutura das noticias, um vetor de listas
         List[] estruturaNoticias;
+        StringBuffer dialogs = new StringBuffer();
+        StringBuffer titleSlideBuffer = new StringBuffer();
         
         StringBuffer html = new StringBuffer();
 }
@@ -41,6 +43,13 @@ run returns [String result]
 	:	(COMMENT | WS)*
 	  begin
 		END                     {
+                                        html.append(dialogs.toString());
+                                        if(titleSlideBuffer.length()>0)
+                                        {
+                                            html.append("<div id=\"titulos\">\n");
+                                            html.append(titleSlideBuffer.toString());
+                                            html.append("</div>\n");
+                                        }
                                         html.append("</body>\n"); 
                                         html.append("</html>\n");
                                         $result = html.toString(); 
@@ -48,7 +57,7 @@ run returns [String result]
 	;
 
 begin
-	:	BEGIN			{ html.append("<html>\n"); }
+	:	BEGIN			{ html.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"pt-br\" xml:lang=\"pt-br\">\n"); }
 		content
 		structure
 	;
@@ -73,6 +82,11 @@ newspaper returns [String titulo, String data]
                                          {
                                          html.append("<head>\n" + "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /> \n"); 
                                          html.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\"/> \n");
+                                         html.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\"/> \n");
+                                         html.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"jqueryui/css/custom-theme/jquery-ui-1.10.2.custom.min.css\"/>\n"); 
+                                         html.append("<script src=\"jquery.min.js\"></script>\n");
+                                         html.append("<script src=\"jqueryui/js/jquery-ui-1.10.2.custom.min.js\"></script>\n");
+                                         html.append("<script src=\"main.js\"></script>\n");
                                          }
 		TITLE DOIS_PONTOS TEXT		{$titulo = $TEXT.text; html.append("<title>" + $titulo + "</title>\n"); }
 		(DATE DOIS_PONTOS TEXT)?	{$data = $TEXT.text; }
@@ -100,6 +114,7 @@ noticia returns [Noticia instance]
 structure
 	:	STRUCTURE OPEN_CHAVE                { html.append("<div id=\"conteudo\">\n"); }
 	 	format
+                titleslide?
 	 	item*
 	 	FECHA_CHAVE                         { 
                                                         int contemNoticia = 0;
@@ -117,14 +132,32 @@ structure
                                                                 {
                                                                     Noticia n = ((ArrayList<Noticia>)estruturaNoticias[i]).remove(0);
                                                                     if(estruturaNoticias[i].size()==0) { contemNoticia--; }
-                                                                    if(n.colunaFinal!=null) { colspan = n.colunaFinal; }
-                                                                    html.append("<td align=justify width=\"" + width + "%\" vAlign=\"top\" colspan=" + (colspan-i+1) + ">\n");
-                                                                    if(n.titulo!=null) { html.append("<h3> " + n.titulo + " </h3>\n"); }
+                                                                    html.append("<td align=justify width=\"" + width + "%\" vAlign=\"top\" ");
+                                                                    if(n.colunaFinal!=null) 
+                                                                    {
+                                                                        colspan = n.colunaFinal; 
+                                                                        html.append("colspan=" + (colspan-i+1) + ">\n");
+                                                                    }                                                                   
+                                                                    else { html.append(">\n");}
+                                                                    String linkNoticia = "";
+                                                                    if(n.texto!=null) 
+                                                                    {
+                                                                        linkNoticia = "class=\"dialog\" name=\"" + n.nome + "\"";
+                                                                        dialogs.append("<div id=\"" + n.nome + "\" style=\"display:none;\">\n");
+                                                                        dialogs.append("<h3> " + n.titulo + " </h3>\n");
+                                                                        dialogs.append(n.texto);
+                                                                        dialogs.append("</div>");
+                                                                    }
+                                                                    if(n.titulo!=null) { html.append("<h3 " + linkNoticia + "> " + n.titulo + " </h3>\n"); }
+                                                                    if(n.imagem!=null) 
+                                                                    { 
+                                                                        html.append("<div id=\"figura\"><p>\n");
+                                                                        html.append("<img class=\"escala\" src=\"" + n.imagem + "\"/>\n"); 
+                                                                        html.append("</p></div>");
+                                                                    }
                                                                     if(n.resumo!=null) { html.append("<p> " + n.resumo + " </p>\n"); }
-                                                                    if(n.imagem!=null) { html.append("<img src=\"" + n.imagem + "\"/>\n"); }
-                                                                    if(n.fonte!=null) { html.append("<h6> <B>Fonte:</B> " + n.fonte + " </h6>\n"); }
-                                                                    if(n.autor!=null) { html.append("<h5> <B>Autor:</B> " + n.autor + " </h5>\n"); }
-                                                                    if(n.texto!=null) { html.append("<p> " + n.texto + " </p>\n"); }
+                                                                    if(n.fonte!=null) { html.append("<br><h5> <B>Fonte:</B> " + n.fonte + " </h5>\n"); }
+                                                                    if(n.autor!=null) { html.append("<br><h5> <B>Autor:</B> " + n.autor + " </h5>\n"); }
                                                                     html.append("</td>\n");
                                                                 }
                                                                 else  { html.append("<td />\n"); }//width=\"" + width + "%\"
@@ -135,6 +168,18 @@ structure
                                                        html.append("</div>\n");
                                                     }     
 	;
+
+titleslide
+        :       TITLE_SLIDE OPEN_CHAVE
+        (        key=NOME_NOTICIA                 { 
+                                                     Noticia noticia = noticias.get($key.text);                          
+                                                     String linkNoticia = "";
+                                                     if(noticia.texto!=null) { linkNoticia = "class=\"dialog\" name=\"" + noticia.nome + "\""; }
+                                                     titleSlideBuffer.append("<h1 " + linkNoticia + "> " + noticia.titulo + " </h1>\n"); 
+                                                    }
+        )*
+                FECHA_CHAVE
+        ;
 
 format returns [Integer borda]
 	:	FORMAT OPEN_CHAVE
@@ -166,6 +211,8 @@ item
                                                         {
                                                             noticia = noticias.get($key.text); 
                                                             noticiaEstrutura = new Noticia(); 
+                                                            noticiaEstrutura.nome = $key.text;                           
+                                                            if(noticia.texto!=null) { noticiaEstrutura.texto = noticia.texto; }
                                                             if($rangeFinal!=null) { noticiaEstrutura.colunaFinal = Integer.parseInt($rangeFinal.text); }
                                                             estruturaNoticias[Integer.parseInt($rangeInicial.text)].add(noticiaEstrutura);
                                                         }
@@ -177,7 +224,6 @@ item
         |       (IMAGE)                            { noticiaEstrutura.imagem = noticia.imagem; }
         |	(SOURCE)                           { noticiaEstrutura.fonte = noticia.fonte; }
         |	(AUTHOR)                           { noticiaEstrutura.autor = noticia.autor; }
-        |	(TEXT_TOKEN)                       { noticiaEstrutura.texto = noticia.texto; }
                 )
         )*                                         
 		FECHA_CHAVE

@@ -3,7 +3,7 @@ lexer grammar NPLLexer;
          package br.npl;
  }
 
-TEXT:  '"' ( EscapeSequence | ~('\\'|'"') )* '"' {setText(getText().substring(1, getText().length()-1));} ;
+TEXT:  '"' ( EscapeSequence | ~('\\'|'"') )* '"' {setText(getText().substring(1, getText().length()-1).replace("\\", ""));} ;
 fragment EscapeSequence: '\\' ('\"');
 WS: [ \r\t\u000C\n]+ -> skip;
 INTEGER:    [0-9]+;
@@ -26,6 +26,7 @@ FORMAT: 'format';
 COL: 'col:';
 BORDER: 'border:';
 ITEM: 'item';
+TITLE_SLIDE: 'titleslide';
 OPEN_BRACKET: '[';
 FECHA_BRACKET: ']';
 DOIS_PONTOS: ':';

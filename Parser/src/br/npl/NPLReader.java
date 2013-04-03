@@ -14,7 +14,15 @@ public class NPLReader {
 	public static void main(String[] args) throws RecognitionException, IOException {
 		String outString;
 
-		CharStream charStream = new ANTLRFileStream("arquivos/exemplo.npl");
+		String inputFile = "arquivos/exemplo.npl";
+		String outputFile = "output/jornal.html";
+		if(args.length==2)
+		{
+			inputFile = args[0];
+			outputFile = args[1];
+		}
+		
+		CharStream charStream = new ANTLRFileStream(inputFile);
 		NPLLexer lexer = new NPLLexer(charStream); 
 		TokenStream tokenStream = new CommonTokenStream(lexer); 
 		NPLParser parser = new NPLParser(tokenStream); 
@@ -22,7 +30,7 @@ public class NPLReader {
 
 		try 
 		{
-			FileWriter fstream = new FileWriter("output/jornal.html");
+			FileWriter fstream = new FileWriter(outputFile);
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(outString);
 			out.close();
