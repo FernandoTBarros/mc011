@@ -52,7 +52,8 @@ public class NPLParser extends Parser {
 	public ATN getATN() { return _ATN; }
 
 
-	          class Noticia { 
+	          class Noticia
+	          { 
 	                         public String nome;
 	                         public String titulo;
 	                         public String resumo;
@@ -60,7 +61,10 @@ public class NPLParser extends Parser {
 	                         public String imagem;
 	                         public String fonte;
 	                         public String autor;
-	                         }
+	                         
+	                         public Integer colunaFinal;
+	                                                  
+	           }
 		/** Map variable name to Integer object holding value */
 		HashMap<String,Noticia> noticias = new HashMap<String,Noticia>();
 		//Guarda a estrutura das noticias, um vetor de listas
@@ -368,12 +372,12 @@ public class NPLParser extends Parser {
 			setState(61); ((NoticiaContext)_localctx).nomeT = match(NOME_NOTICIA);
 			setState(62); match(OPEN_CHAVE);
 			item.nome = (((NoticiaContext)_localctx).nomeT!=null?((NoticiaContext)_localctx).nomeT.getText():null);
-			setState(91);
+			setState(96);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TITLE) | (1L << ABSTRACT) | (1L << IMAGE) | (1L << TEXT_TOKEN) | (1L << AUTHOR) | (1L << SOURCE))) != 0)) {
 				{
-				setState(89);
+				setState(94);
 				switch (_input.LA(1)) {
 				case TITLE:
 					{
@@ -382,55 +386,55 @@ public class NPLParser extends Parser {
 					setState(65); match(DOIS_PONTOS);
 					setState(66); ((NoticiaContext)_localctx).tituloT = match(TEXT);
 					}
+					item.titulo = (((NoticiaContext)_localctx).tituloT!=null?((NoticiaContext)_localctx).tituloT.getText():null);
 					}
 					break;
 				case ABSTRACT:
 					{
-					item.titulo = (((NoticiaContext)_localctx).tituloT!=null?((NoticiaContext)_localctx).tituloT.getText():null);
 					{
-					setState(68); match(ABSTRACT);
-					setState(69); match(DOIS_PONTOS);
-					setState(70); ((NoticiaContext)_localctx).resumoT = match(TEXT);
+					setState(69); match(ABSTRACT);
+					setState(70); match(DOIS_PONTOS);
+					setState(71); ((NoticiaContext)_localctx).resumoT = match(TEXT);
 					}
+					item.resumo = (((NoticiaContext)_localctx).resumoT!=null?((NoticiaContext)_localctx).resumoT.getText():null);
 					}
 					break;
 				case IMAGE:
 					{
-					item.resumo = (((NoticiaContext)_localctx).resumoT!=null?((NoticiaContext)_localctx).resumoT.getText():null);
 					{
-					setState(72); match(IMAGE);
-					setState(73); match(DOIS_PONTOS);
-					setState(74); ((NoticiaContext)_localctx).imagemT = match(TEXT);
+					setState(74); match(IMAGE);
+					setState(75); match(DOIS_PONTOS);
+					setState(76); ((NoticiaContext)_localctx).imagemT = match(TEXT);
 					}
+					item.imagem = (((NoticiaContext)_localctx).imagemT!=null?((NoticiaContext)_localctx).imagemT.getText():null);
 					}
 					break;
 				case SOURCE:
 					{
-					item.imagem = (((NoticiaContext)_localctx).imagemT!=null?((NoticiaContext)_localctx).imagemT.getText():null);
 					{
-					setState(76); match(SOURCE);
-					setState(77); match(DOIS_PONTOS);
-					setState(78); ((NoticiaContext)_localctx).fonteT = match(TEXT);
+					setState(79); match(SOURCE);
+					setState(80); match(DOIS_PONTOS);
+					setState(81); ((NoticiaContext)_localctx).fonteT = match(TEXT);
 					}
+					item.fonte = (((NoticiaContext)_localctx).fonteT!=null?((NoticiaContext)_localctx).fonteT.getText():null);
 					}
 					break;
 				case AUTHOR:
 					{
-					item.fonte = (((NoticiaContext)_localctx).fonteT!=null?((NoticiaContext)_localctx).fonteT.getText():null);
 					{
-					setState(80); match(AUTHOR);
-					setState(81); match(DOIS_PONTOS);
-					setState(82); ((NoticiaContext)_localctx).autorT = match(TEXT);
+					setState(84); match(AUTHOR);
+					setState(85); match(DOIS_PONTOS);
+					setState(86); ((NoticiaContext)_localctx).autorT = match(TEXT);
 					}
+					item.autor = (((NoticiaContext)_localctx).autorT!=null?((NoticiaContext)_localctx).autorT.getText():null);
 					}
 					break;
 				case TEXT_TOKEN:
 					{
-					item.autor = (((NoticiaContext)_localctx).autorT!=null?((NoticiaContext)_localctx).autorT.getText():null);
 					{
-					setState(84); match(TEXT_TOKEN);
-					setState(85); match(DOIS_PONTOS);
-					setState(86); ((NoticiaContext)_localctx).textoT = match(TEXT);
+					setState(89); match(TEXT_TOKEN);
+					setState(90); match(DOIS_PONTOS);
+					setState(91); ((NoticiaContext)_localctx).textoT = match(TEXT);
 					}
 					item.texto = (((NoticiaContext)_localctx).textoT!=null?((NoticiaContext)_localctx).textoT.getText():null);
 					}
@@ -439,11 +443,11 @@ public class NPLParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(93);
+				setState(98);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(94); match(FECHA_CHAVE);
+			setState(99); match(FECHA_CHAVE);
 
 			                                                                noticias.put(item.nome, item); 
 			                                                                ((NoticiaContext)_localctx).instance =  item;
@@ -462,6 +466,7 @@ public class NPLParser extends Parser {
 	}
 
 	public static class StructureContext extends ParserRuleContext {
+		public FormatContext format;
 		public ItemContext item(int i) {
 			return getRuleContext(ItemContext.class,i);
 		}
@@ -487,55 +492,56 @@ public class NPLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(97); match(STRUCTURE);
-			setState(98); match(OPEN_CHAVE);
-			 html.append("<div id=\"left\">\n"); 
-			setState(100); format();
-			setState(104);
+			setState(102); match(STRUCTURE);
+			setState(103); match(OPEN_CHAVE);
+			 html.append("<div id=\"conteudo\">\n"); 
+			setState(105); ((StructureContext)_localctx).format = format();
+			setState(109);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==ITEM) {
 				{
 				{
-				setState(101); item();
+				setState(106); item();
 				}
 				}
-				setState(106);
+				setState(111);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(107); match(FECHA_CHAVE);
+			setState(112); match(FECHA_CHAVE);
 			 
-			                                                        if(estruturaNoticias[1].size()>0)
+			                                                        int contemNoticia = 0;
+			                                                        for(int i=1; i < estruturaNoticias.length; i++) { if(estruturaNoticias[i].size()>0) contemNoticia++; }
+			                                                        if(contemNoticia>0) { html.append("<table cellSpacing=0 cellPadding=8 width=\"1024\" border=" + ((StructureContext)_localctx).format.borda + ">\n"); }
+			                                                        while(contemNoticia>0)
 			                                                        {
-			                                                            html.append("<div id=\"sub_left\"> \n");
-			                                                        
-			                                                        for (Noticia n : (ArrayList<Noticia>)estruturaNoticias[1])
-			                                                        {
-			                                                         if(n.titulo!=null) { html.append("<h3> " + n.titulo + " </h3>\n"); }
-			                                                         if(n.resumo!=null) { html.append("<p> " + n.resumo + " </p>\n"); }
-			                                                         if(n.imagem!=null) { html.append("<img src=\"" + n.imagem + "\"/>\n"); }
-			                                                         if(n.fonte!=null) { html.append("<h6> " + n.fonte + " </h6>\n"); }
-			                                                         if(n.autor!=null) { html.append("<h5> " + n.autor + " </h5>\n"); }
-			                                                         if(n.texto!=null) { html.append("<p> " + n.texto + " </p>\n"); }
-			                                                         }
-			                                                         html.append("</div> \n");
+			                                                            html.append("<tr>\n");
+			                                                            int colspan = 0;
+			                                                            double width = 100/(estruturaNoticias.length-1);
+			                                                            for(int i=1; i < estruturaNoticias.length; i++)
+			                                                            { 
+			                                                                if(i <= colspan) continue;
+			                                                                if(estruturaNoticias[i].size()>0)
+			                                                                {
+			                                                                    Noticia n = ((ArrayList<Noticia>)estruturaNoticias[i]).remove(0);
+			                                                                    if(estruturaNoticias[i].size()==0) { contemNoticia--; }
+			                                                                    if(n.colunaFinal!=null) { colspan = n.colunaFinal; }
+			                                                                    html.append("<td align=justify width=\"" + width + "%\" vAlign=\"top\" colspan=" + (colspan-i+1) + ">\n");
+			                                                                    if(n.titulo!=null) { html.append("<h3> " + n.titulo + " </h3>\n"); }
+			                                                                    if(n.resumo!=null) { html.append("<p> " + n.resumo + " </p>\n"); }
+			                                                                    if(n.imagem!=null) { html.append("<img src=\"" + n.imagem + "\"/>\n"); }
+			                                                                    if(n.fonte!=null) { html.append("<h6> <B>Fonte:</B> " + n.fonte + " </h6>\n"); }
+			                                                                    if(n.autor!=null) { html.append("<h5> <B>Autor:</B> " + n.autor + " </h5>\n"); }
+			                                                                    if(n.texto!=null) { html.append("<p> " + n.texto + " </p>\n"); }
+			                                                                    html.append("</td>\n");
+			                                                                }
+			                                                                else  { html.append("<td />\n"); }//width=\"" + width + "%\"
+			                                                            }
+			                                                            html.append("</tr>\n");
 			                                                        }
-			                                                          if(estruturaNoticias[2].size()>0)
-			                                                        {
-			                                                            html.append("<div id=\"sub_content\"> \n");
-			                                                        
-			                                                        for (Noticia n : (ArrayList<Noticia>)estruturaNoticias[2])
-			                                                        {
-			                                                         if(n.titulo!=null) { html.append("<h3> " + n.titulo + " </h3>\n"); }
-			                                                         if(n.resumo!=null) { html.append("<p> " + n.resumo + " </p>\n"); }
-			                                                         if(n.imagem!=null) { html.append("<img src=\"" + n.imagem + "\"/>\n"); }
-			                                                         if(n.fonte!=null) { html.append("<h6> " + n.fonte + " </h6>\n"); }
-			                                                         if(n.autor!=null) { html.append("<h5> " + n.autor + " </h5>\n"); }
-			                                                         if(n.texto!=null) { html.append("<p> " + n.texto + " </p>\n"); }
-			                                                         }
-			                                                         html.append("</div> \n");
-			                                                        }
+			                                                       html.append("</table>\n");
+			                                                       html.append("</div>\n");
 			                                                    
 			}
 		}
@@ -551,8 +557,9 @@ public class NPLParser extends Parser {
 	}
 
 	public static class FormatContext extends ParserRuleContext {
+		public Integer borda;
 		public Token coluna;
-		public Token borda;
+		public Token bordaT;
 		public List<TerminalNode> INTEGER() { return getTokens(NPLParser.INTEGER); }
 		public TerminalNode FECHA_CHAVE() { return getToken(NPLParser.FECHA_CHAVE, 0); }
 		public TerminalNode FORMAT() { return getToken(NPLParser.FORMAT, 0); }
@@ -574,19 +581,20 @@ public class NPLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(110); match(FORMAT);
-			setState(111); match(OPEN_CHAVE);
-			setState(112); match(COL);
-			setState(113); ((FormatContext)_localctx).coluna = match(INTEGER);
-			setState(114); match(BORDER);
-			setState(115); ((FormatContext)_localctx).borda = match(INTEGER);
-			setState(116); match(FECHA_CHAVE);
+			setState(115); match(FORMAT);
+			setState(116); match(OPEN_CHAVE);
+			setState(117); match(COL);
+			setState(118); ((FormatContext)_localctx).coluna = match(INTEGER);
+			setState(119); match(BORDER);
+			setState(120); ((FormatContext)_localctx).bordaT = match(INTEGER);
+			 ((FormatContext)_localctx).borda =  Integer.parseInt((((FormatContext)_localctx).bordaT!=null?((FormatContext)_localctx).bordaT.getText():null)); 
+			setState(122); match(FECHA_CHAVE);
 			 
-			                                                     int tamColuna = Integer.parseInt((((FormatContext)_localctx).coluna!=null?((FormatContext)_localctx).coluna.getText():null));
-			                                                    estruturaNoticias = new List[tamColuna];
-			                                                        for(int i=0; i < tamColuna; i++)
+			                                                        int tamColuna = Integer.parseInt((((FormatContext)_localctx).coluna!=null?((FormatContext)_localctx).coluna.getText():null));
+			                                                        estruturaNoticias = new List[tamColuna+1];
+			                                                        for(int i=1; i <= tamColuna; i++)
 			                                                        {
-			                                                        estruturaNoticias[i] = new ArrayList();
+			                                                            estruturaNoticias[i] = new ArrayList();
 			                                                        }
 			                                                    
 			}
@@ -661,39 +669,47 @@ public class NPLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(119); match(ITEM);
-			setState(120); match(OPEN_BRACKET);
-			setState(121); ((ItemContext)_localctx).rangeInicial = match(INTEGER);
-			setState(124);
+			setState(125); match(ITEM);
+			setState(126); match(OPEN_BRACKET);
+			setState(127); ((ItemContext)_localctx).rangeInicial = match(INTEGER);
+			setState(130);
 			_la = _input.LA(1);
 			if (_la==DOIS_PONTOS) {
 				{
-				setState(122); match(DOIS_PONTOS);
-				setState(123); ((ItemContext)_localctx).rangeFinal = match(INTEGER);
+				setState(128); match(DOIS_PONTOS);
+				setState(129); ((ItemContext)_localctx).rangeFinal = match(INTEGER);
 				}
 			}
 
-			setState(126); match(FECHA_BRACKET);
-			setState(127); match(OPEN_CHAVE);
-			setState(147);
+			setState(132); match(FECHA_BRACKET);
+			setState(133); match(OPEN_CHAVE);
+			 
+			                                                Noticia noticiaEstrutura = null; 
+			                                                Noticia noticia = null;
+			                                             
+			setState(154);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==NOME_NOTICIA) {
 				{
 				{
-				setState(128); ((ItemContext)_localctx).key = match(NOME_NOTICIA);
+				setState(135); ((ItemContext)_localctx).key = match(NOME_NOTICIA);
 				 
-				                                                     Noticia noticia = noticias.get((((ItemContext)_localctx).key!=null?((ItemContext)_localctx).key.getText():null)); 
-				                                                     Noticia noticiaEstrutura = new Noticia(); 
-				                                                     estruturaNoticias[Integer.parseInt((((ItemContext)_localctx).rangeInicial!=null?((ItemContext)_localctx).rangeInicial.getText():null))].add(noticiaEstrutura);
-				                                                     
-				setState(130); match(PONTO);
-				setState(143);
+				                                                        if(noticiaEstrutura==null)
+				                                                        {
+				                                                            noticia = noticias.get((((ItemContext)_localctx).key!=null?((ItemContext)_localctx).key.getText():null)); 
+				                                                            noticiaEstrutura = new Noticia(); 
+				                                                            if(((ItemContext)_localctx).rangeFinal!=null) { noticiaEstrutura.colunaFinal = Integer.parseInt((((ItemContext)_localctx).rangeFinal!=null?((ItemContext)_localctx).rangeFinal.getText():null)); }
+				                                                            estruturaNoticias[Integer.parseInt((((ItemContext)_localctx).rangeInicial!=null?((ItemContext)_localctx).rangeInicial.getText():null))].add(noticiaEstrutura);
+				                                                        }
+				                                                    
+				setState(137); match(PONTO);
+				setState(150);
 				switch (_input.LA(1)) {
 				case TITLE:
 					{
 					{
-					setState(131); match(TITLE);
+					setState(138); match(TITLE);
 					}
 					 noticiaEstrutura.titulo = noticia.titulo; 
 					}
@@ -701,7 +717,7 @@ public class NPLParser extends Parser {
 				case ABSTRACT:
 					{
 					{
-					setState(133); match(ABSTRACT);
+					setState(140); match(ABSTRACT);
 					}
 					 noticiaEstrutura.resumo = noticia.resumo; 
 					}
@@ -709,7 +725,7 @@ public class NPLParser extends Parser {
 				case IMAGE:
 					{
 					{
-					setState(135); match(IMAGE);
+					setState(142); match(IMAGE);
 					}
 					 noticiaEstrutura.imagem = noticia.imagem; 
 					}
@@ -717,7 +733,7 @@ public class NPLParser extends Parser {
 				case SOURCE:
 					{
 					{
-					setState(137); match(SOURCE);
+					setState(144); match(SOURCE);
 					}
 					 noticiaEstrutura.fonte = noticia.fonte; 
 					}
@@ -725,7 +741,7 @@ public class NPLParser extends Parser {
 				case AUTHOR:
 					{
 					{
-					setState(139); match(AUTHOR);
+					setState(146); match(AUTHOR);
 					}
 					 noticiaEstrutura.autor = noticia.autor; 
 					}
@@ -733,7 +749,7 @@ public class NPLParser extends Parser {
 				case TEXT_TOKEN:
 					{
 					{
-					setState(141); match(TEXT_TOKEN);
+					setState(148); match(TEXT_TOKEN);
 					}
 					 noticiaEstrutura.texto = noticia.texto; 
 					}
@@ -743,11 +759,11 @@ public class NPLParser extends Parser {
 				}
 				}
 				}
-				setState(149);
+				setState(156);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(150); match(FECHA_CHAVE);
+			setState(157); match(FECHA_CHAVE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -762,47 +778,50 @@ public class NPLParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\2\3\35\u009b\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b"+
+		"\2\3\35\u00a2\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b"+
 		"\4\t\t\t\3\2\7\2\24\n\2\f\2\16\2\27\13\2\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3"+
 		"\3\3\3\3\4\3\4\3\4\3\4\3\4\7\4\'\n\4\f\4\16\4*\13\4\3\4\3\4\3\4\3\5\3"+
 		"\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\59\n\5\3\5\3\5\3\5\3\5\3\6\3\6\3"+
 		"\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6"+
-		"\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\7\6\\\n\6\f\6\16\6_\13\6\3\6\3\6"+
-		"\3\6\3\7\3\7\3\7\3\7\3\7\7\7i\n\7\f\7\16\7l\13\7\3\7\3\7\3\7\3\b\3\b\3"+
-		"\b\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\5\t\177\n\t\3\t\3\t\3\t"+
-		"\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\t\u0092\n\t"+
-		"\7\t\u0094\n\t\f\t\16\t\u0097\13\t\3\t\3\t\3\t\2\n\2\4\6\b\n\f\16\20\2"+
-		"\3\4\4\4\35\35\u00a3\2\25\3\2\2\2\4\34\3\2\2\2\6!\3\2\2\2\b.\3\2\2\2\n"+
-		">\3\2\2\2\fc\3\2\2\2\16p\3\2\2\2\20y\3\2\2\2\22\24\t\2\2\2\23\22\3\2\2"+
-		"\2\24\27\3\2\2\2\25\23\3\2\2\2\25\26\3\2\2\2\26\30\3\2\2\2\27\25\3\2\2"+
-		"\2\30\31\5\4\3\2\31\32\7\t\2\2\32\33\b\2\1\2\33\3\3\2\2\2\34\35\7\b\2"+
-		"\2\35\36\b\3\1\2\36\37\5\6\4\2\37 \5\f\7\2 \5\3\2\2\2!\"\7\13\2\2\"#\7"+
-		"\6\2\2#$\5\b\5\2$(\b\4\1\2%\'\5\n\6\2&%\3\2\2\2\'*\3\2\2\2(&\3\2\2\2("+
-		")\3\2\2\2)+\3\2\2\2*(\3\2\2\2+,\7\7\2\2,-\b\4\1\2-\7\3\2\2\2./\7\n\2\2"+
-		"/\60\7\6\2\2\60\61\b\5\1\2\61\62\7\16\2\2\62\63\7\32\2\2\63\64\7\3\2\2"+
-		"\648\b\5\1\2\65\66\7\r\2\2\66\67\7\32\2\2\679\7\3\2\28\65\3\2\2\289\3"+
-		"\2\2\29:\3\2\2\2:;\b\5\1\2;<\7\7\2\2<=\b\5\1\2=\t\3\2\2\2>?\b\6\1\2?@"+
-		"\7\34\2\2@A\7\6\2\2A]\b\6\1\2BC\7\16\2\2CD\7\32\2\2D\\\7\3\2\2EF\b\6\1"+
-		"\2FG\7\17\2\2GH\7\32\2\2H\\\7\3\2\2IJ\b\6\1\2JK\7\20\2\2KL\7\32\2\2L\\"+
-		"\7\3\2\2MN\b\6\1\2NO\7\23\2\2OP\7\32\2\2P\\\7\3\2\2QR\b\6\1\2RS\7\22\2"+
-		"\2ST\7\32\2\2T\\\7\3\2\2UV\b\6\1\2VW\7\21\2\2WX\7\32\2\2XY\7\3\2\2YZ\3"+
-		"\2\2\2Z\\\b\6\1\2[B\3\2\2\2[E\3\2\2\2[I\3\2\2\2[M\3\2\2\2[Q\3\2\2\2[U"+
-		"\3\2\2\2\\_\3\2\2\2][\3\2\2\2]^\3\2\2\2^`\3\2\2\2_]\3\2\2\2`a\7\7\2\2"+
-		"ab\b\6\1\2b\13\3\2\2\2cd\7\f\2\2de\7\6\2\2ef\b\7\1\2fj\5\16\b\2gi\5\20"+
-		"\t\2hg\3\2\2\2il\3\2\2\2jh\3\2\2\2jk\3\2\2\2km\3\2\2\2lj\3\2\2\2mn\7\7"+
-		"\2\2no\b\7\1\2o\r\3\2\2\2pq\7\24\2\2qr\7\6\2\2rs\7\25\2\2st\7\5\2\2tu"+
-		"\7\26\2\2uv\7\5\2\2vw\7\7\2\2wx\b\b\1\2x\17\3\2\2\2yz\7\27\2\2z{\7\30"+
-		"\2\2{~\7\5\2\2|}\7\32\2\2}\177\7\5\2\2~|\3\2\2\2~\177\3\2\2\2\177\u0080"+
-		"\3\2\2\2\u0080\u0081\7\31\2\2\u0081\u0095\7\6\2\2\u0082\u0083\7\34\2\2"+
-		"\u0083\u0084\b\t\1\2\u0084\u0091\7\33\2\2\u0085\u0086\7\16\2\2\u0086\u0092"+
-		"\b\t\1\2\u0087\u0088\7\17\2\2\u0088\u0092\b\t\1\2\u0089\u008a\7\20\2\2"+
-		"\u008a\u0092\b\t\1\2\u008b\u008c\7\23\2\2\u008c\u0092\b\t\1\2\u008d\u008e"+
-		"\7\22\2\2\u008e\u0092\b\t\1\2\u008f\u0090\7\21\2\2\u0090\u0092\b\t\1\2"+
-		"\u0091\u0085\3\2\2\2\u0091\u0087\3\2\2\2\u0091\u0089\3\2\2\2\u0091\u008b"+
-		"\3\2\2\2\u0091\u008d\3\2\2\2\u0091\u008f\3\2\2\2\u0092\u0094\3\2\2\2\u0093"+
-		"\u0082\3\2\2\2\u0094\u0097\3\2\2\2\u0095\u0093\3\2\2\2\u0095\u0096\3\2"+
-		"\2\2\u0096\u0098\3\2\2\2\u0097\u0095\3\2\2\2\u0098\u0099\7\7\2\2\u0099"+
-		"\21\3\2\2\2\13\25(8[]j~\u0091\u0095";
+		"\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\7\6a\n\6\f\6"+
+		"\16\6d\13\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7\7\7n\n\7\f\7\16\7q\13\7\3"+
+		"\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t"+
+		"\5\t\u0085\n\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t"+
+		"\3\t\3\t\3\t\3\t\5\t\u0099\n\t\7\t\u009b\n\t\f\t\16\t\u009e\13\t\3\t\3"+
+		"\t\3\t\2\n\2\4\6\b\n\f\16\20\2\3\4\4\4\35\35\u00aa\2\25\3\2\2\2\4\34\3"+
+		"\2\2\2\6!\3\2\2\2\b.\3\2\2\2\n>\3\2\2\2\fh\3\2\2\2\16u\3\2\2\2\20\177"+
+		"\3\2\2\2\22\24\t\2\2\2\23\22\3\2\2\2\24\27\3\2\2\2\25\23\3\2\2\2\25\26"+
+		"\3\2\2\2\26\30\3\2\2\2\27\25\3\2\2\2\30\31\5\4\3\2\31\32\7\t\2\2\32\33"+
+		"\b\2\1\2\33\3\3\2\2\2\34\35\7\b\2\2\35\36\b\3\1\2\36\37\5\6\4\2\37 \5"+
+		"\f\7\2 \5\3\2\2\2!\"\7\13\2\2\"#\7\6\2\2#$\5\b\5\2$(\b\4\1\2%\'\5\n\6"+
+		"\2&%\3\2\2\2\'*\3\2\2\2(&\3\2\2\2()\3\2\2\2)+\3\2\2\2*(\3\2\2\2+,\7\7"+
+		"\2\2,-\b\4\1\2-\7\3\2\2\2./\7\n\2\2/\60\7\6\2\2\60\61\b\5\1\2\61\62\7"+
+		"\16\2\2\62\63\7\32\2\2\63\64\7\3\2\2\648\b\5\1\2\65\66\7\r\2\2\66\67\7"+
+		"\32\2\2\679\7\3\2\28\65\3\2\2\289\3\2\2\29:\3\2\2\2:;\b\5\1\2;<\7\7\2"+
+		"\2<=\b\5\1\2=\t\3\2\2\2>?\b\6\1\2?@\7\34\2\2@A\7\6\2\2Ab\b\6\1\2BC\7\16"+
+		"\2\2CD\7\32\2\2DE\7\3\2\2EF\3\2\2\2Fa\b\6\1\2GH\7\17\2\2HI\7\32\2\2IJ"+
+		"\7\3\2\2JK\3\2\2\2Ka\b\6\1\2LM\7\20\2\2MN\7\32\2\2NO\7\3\2\2OP\3\2\2\2"+
+		"Pa\b\6\1\2QR\7\23\2\2RS\7\32\2\2ST\7\3\2\2TU\3\2\2\2Ua\b\6\1\2VW\7\22"+
+		"\2\2WX\7\32\2\2XY\7\3\2\2YZ\3\2\2\2Za\b\6\1\2[\\\7\21\2\2\\]\7\32\2\2"+
+		"]^\7\3\2\2^_\3\2\2\2_a\b\6\1\2`B\3\2\2\2`G\3\2\2\2`L\3\2\2\2`Q\3\2\2\2"+
+		"`V\3\2\2\2`[\3\2\2\2ad\3\2\2\2b`\3\2\2\2bc\3\2\2\2ce\3\2\2\2db\3\2\2\2"+
+		"ef\7\7\2\2fg\b\6\1\2g\13\3\2\2\2hi\7\f\2\2ij\7\6\2\2jk\b\7\1\2ko\5\16"+
+		"\b\2ln\5\20\t\2ml\3\2\2\2nq\3\2\2\2om\3\2\2\2op\3\2\2\2pr\3\2\2\2qo\3"+
+		"\2\2\2rs\7\7\2\2st\b\7\1\2t\r\3\2\2\2uv\7\24\2\2vw\7\6\2\2wx\7\25\2\2"+
+		"xy\7\5\2\2yz\7\26\2\2z{\7\5\2\2{|\b\b\1\2|}\7\7\2\2}~\b\b\1\2~\17\3\2"+
+		"\2\2\177\u0080\7\27\2\2\u0080\u0081\7\30\2\2\u0081\u0084\7\5\2\2\u0082"+
+		"\u0083\7\32\2\2\u0083\u0085\7\5\2\2\u0084\u0082\3\2\2\2\u0084\u0085\3"+
+		"\2\2\2\u0085\u0086\3\2\2\2\u0086\u0087\7\31\2\2\u0087\u0088\7\6\2\2\u0088"+
+		"\u009c\b\t\1\2\u0089\u008a\7\34\2\2\u008a\u008b\b\t\1\2\u008b\u0098\7"+
+		"\33\2\2\u008c\u008d\7\16\2\2\u008d\u0099\b\t\1\2\u008e\u008f\7\17\2\2"+
+		"\u008f\u0099\b\t\1\2\u0090\u0091\7\20\2\2\u0091\u0099\b\t\1\2\u0092\u0093"+
+		"\7\23\2\2\u0093\u0099\b\t\1\2\u0094\u0095\7\22\2\2\u0095\u0099\b\t\1\2"+
+		"\u0096\u0097\7\21\2\2\u0097\u0099\b\t\1\2\u0098\u008c\3\2\2\2\u0098\u008e"+
+		"\3\2\2\2\u0098\u0090\3\2\2\2\u0098\u0092\3\2\2\2\u0098\u0094\3\2\2\2\u0098"+
+		"\u0096\3\2\2\2\u0099\u009b\3\2\2\2\u009a\u0089\3\2\2\2\u009b\u009e\3\2"+
+		"\2\2\u009c\u009a\3\2\2\2\u009c\u009d\3\2\2\2\u009d\u009f\3\2\2\2\u009e"+
+		"\u009c\3\2\2\2\u009f\u00a0\7\7\2\2\u00a0\21\3\2\2\2\13\25(8`bo\u0084\u0098"+
+		"\u009c";
 	public static final ATN _ATN =
 		ATNSimulator.deserialize(_serializedATN.toCharArray());
 	static {

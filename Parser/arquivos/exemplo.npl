@@ -107,6 +107,23 @@ O presidente nacional do PSDB, senador Sérgio Guerra (PSDB-PE), afirmou neste d
 	
 		source: "http://www.folhaOnLine.com"
 	}
+	
+	coluna31{
+		title: "País do faz-de-conta"
+		image: "./helio.jpg"
+		abstract:"Durante minhas breves semanas de descanso, alguns leitores me escreveram \"encomendando\" 
+		artigos sobre a lei seca e o caso Daniel Dantas. Para não descontentar ninguém, arrisco uma manobra temerária: 
+		vou comentar os dois assuntos valendo-me de uma mesma chave interpretativa que me parece especialmente valiosa 
+		para entender o Brasil de hoje. Comecemos pela lei seca.
+		Como ferrenho entusiasta daquilo que se convencionou chamar de liberdades, defendo até as últimas consequências
+		 o direito das pessoas de embriagar-se, drogar-se e fazer tudo o que bem entenderem com seus próprios corpos e mentes. 
+		Ainda assim, o conceito por trás da lei seca é inatacável: você tem o direito de beber até cair; mas, para tanto, 
+		precisa renunciar momentaneamente a outros direitos, como o de dirigir veículos automotores ou operar máquinas pesadas, 
+		posto que fazê-lo com reflexos e capacidade de decisão diminuídos pelo álcool representa um risco para terceiros."
+		
+		author: "Hélio Schwartsman"
+		
+	}
 }
 
 structure {
@@ -136,6 +153,11 @@ structure {
 		Noticia3.source
 		Noticia3.image
 		Noticia3.abstract
+	}
+	item[3]{
+		coluna31.title
+		coluna31.image
+		coluna31.abstract
 	}
 
 }
