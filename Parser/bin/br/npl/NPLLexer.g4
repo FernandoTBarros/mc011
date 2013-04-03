@@ -3,6 +3,7 @@ lexer grammar NPLLexer;
          package br.npl;
  }
 
+TEXT_FORMATADO: '"' -> pushMode(FORMAT_TEXT);
 TEXT:  '"' ( EscapeSequence | ~('\\'|'"') )* '"' {setText(getText().substring(1, getText().length()-1).replace("\\", ""));} ;
 fragment EscapeSequence: '\\' ('\"');
 WS: [ \r\t\u000C\n]+ -> skip;
@@ -37,3 +38,11 @@ COMMENT
         | '//' ~[\r\n]*
         ) -> skip
     ;
+
+mode FORMAT_TEXT;
+ESCAPE: '\\\"' {setText("\"");};
+ENDTEXT: '\"' -> popMode;
+SECAO_H2: '==' ~[=]* '==' {setText("<h2>" + getText() + "</h2>");};
+SECAO_H3: '===' ~[=]* '===' {setText("<h3>" + getText() + "</h3>");};
+STRING: .+?;
+               

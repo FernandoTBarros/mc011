@@ -102,7 +102,7 @@ noticia returns [Noticia instance]
         |       (IMAGE DOIS_PONTOS imagemT=TEXT)        	{item.imagem = $imagemT.text;}
         |	(SOURCE DOIS_PONTOS fonteT=TEXT)      		{item.fonte = $fonteT.text;}
         |	(AUTHOR DOIS_PONTOS autorT=TEXT)      		{item.autor = $autorT.text;}
-        |	(TEXT_TOKEN DOIS_PONTOS textoT=TEXT)   		{item.texto = $textoT.text;}
+        |	(TEXT_TOKEN DOIS_PONTOS textoT=TEXT)  {item.texto = $textoT.text;}
                 )*
 		FECHA_CHAVE                                     
                                                                 {
