@@ -1,0 +1,24 @@
+switch para casar os padrões
+prioridades são determinadas pelas aparições nos cases do switch
+
+implementar instruções do x86 básicas
+cerca de 20~30 instruções
+aritmética
+saltos
+acesso à memória
+
+
+ler cap9 do appel pra aprender maximal munch
+
+brincar com o pacote do appel para aprender a arvore
+
+depurar é chato
+recomenda-se começar com os programas pequenos
+criar programas à medida que for desenvolvendo as intruções
+testes devem ser incrementais
+
+
+classes auxiliares já existem no pacote de implementação (Util, ListUtil)
+
+é possível fazer todo o projeto apenas na classe CodeGen
+
