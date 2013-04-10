@@ -1,0 +1,26 @@
+Pasta 'misc'
+
+A pasta 'misc' contém os estilos do CSS e os arquivos do jquery e javascript
+utilizados para criar o slide de títulos e a dialog do texto.
+Portanto para que o arquivo HTML gerado saia como esperado, é necessário
+que ele seja colocado lá.
+
+Slide de Títulos
+
+Desenvolvemos esse recurso novo da linguagem, que permite ao usuário escolher
+quais títulos ele quer que fique aparecendo no linkbar.
+Para isso, foi criado uma nova tag dentro de 'structure' chamada:
+ 'titleslide'.
+Dentro dela, basta apenas escrever o nome da notícia que quer que tenha o 
+título aparecendo no slide.
+O arquivo exemplo.npl que está na pasta raiz contém um exemplo de como é usado
+o slide de títulos.
+
+Para Compilar:
+	make compile
+
+Para rodar (sugestão de INPUT e OUTPUT):
+	make run INPUT=exemplo.npl OUTPUT=misc/jornal.html
+
+Para limpar:
+	make clean

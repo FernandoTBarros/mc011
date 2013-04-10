@@ -1,0 +1,15 @@
+CC=javac
+PRJCFLAGS=
+LD=javac
+RUNNER=java
+RUNNERFLAGS=jar
+ANTLRFLAGS_LISTENER=no-listener
+ANTLRFLAGS_VISITOR=no-visitor
+LDFLAGS	= 
+RM=rm 
+RMRF=rf
+ECHO=echo
+SHELL=/bin/sh
+.SILENT :
+
+
