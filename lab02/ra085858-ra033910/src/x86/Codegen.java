@@ -1,16 +1,6 @@
 package x86;
 
-import temp.Label;
-import temp.Temp;
-import tree.BINOP;
-import tree.CALL;
-import tree.CONST;
-import tree.ESEQ;
-import tree.Exp;
-import tree.MEM;
-import tree.NAME;
 import tree.Stm;
-import tree.TEMP;
 import util.List;
 import assem.Instr;
 
@@ -24,7 +14,11 @@ public class Codegen
 		frame = f;
 	}
 
-	private void append(Instr instr)
+	/**
+	 * Funcao auxiliar para armazenar as instrucoes geradas ao decorrer dos Munch
+	 * @param instr
+	 */
+	public void append(Instr instr)
 	{
 		assert (list != null);
 		list.append(instr);
@@ -34,313 +28,21 @@ public class Codegen
 	{
 		list = new List<Instr>();
 
+		//Seta a instancia de list criada nas duas classes auxiliares, para ter uma lista apenas para toda execucao
+		MunchStm.list = list;
+		MunchExp.list = list;
+
+		//Seta instancia de frame na classe MunchExp que sera usada na funcao munchCall e munchBinop
+		MunchExp.frame = frame;
+		
+		//Percorre a arvore de statements fazendo o munch pra cada caso
 		for(int i = 0; i < body.size(); i++)
 		{
-			munchStm(body.get(i));
+			MunchStm.munchStm(body.get(i));
 		}
-
-		// for(int i = 0; i < body.size(); i++)
-		// {
-		// new tree.PrintIR(System.err).printStatement(body.get(i));
-		// }
+		
+		//Retorna a lista de instrucoes gerada durante a execucao
 		return list;
 	}
 
-	//@formatter:off
-	private void munchStm(Stm stm)
-	{
-		if(stm instanceof tree.CJUMP) 		{ munchCjump((tree.CJUMP) stm); }
-		else if(stm instanceof tree.EXPSTM) { munchExpstm((tree.EXPSTM) stm); }
-		else if(stm instanceof tree.JUMP) 	{ munchJump((tree.JUMP) stm); }
-		else if(stm instanceof tree.LABEL) 	{ munchLabel((tree.LABEL) stm); }
-		else if(stm instanceof tree.MOVE) 	{ munchMove((tree.MOVE) stm); }
-		else if(stm instanceof tree.SEQ) 	{ munchSeq((tree.SEQ) stm); }
-	}
-
-	private Temp munchExp(Exp exp)
-	{
-		if(exp instanceof tree.BINOP) 		{ return munchBinop((tree.BINOP) exp); }
-		if(exp instanceof tree.CALL) 		{ return munchCall((tree.CALL) exp); }
-		if(exp instanceof tree.ESEQ) 		{ return munchEseq((tree.ESEQ) exp); }
-		if(exp instanceof tree.MEM) 		{ return munchMem((tree.MEM) exp); }
-		if(exp instanceof tree.NAME) 		{ return munchName((tree.NAME) exp); }
-		if(exp instanceof tree.TEMP) 		{ return munchTemp((tree.TEMP) exp); }
-		if(exp instanceof tree.CONST)		{ return munchConst((tree.CONST) exp); }
-		return null; // Se chegou aqui significa que não casou com nenhuma expressão e portanto dará erro
-	}
-
-	/** Expressions */
-	//@formatter:on
-	private Temp munchConst(CONST exp)
-	{
-		Temp t = new Temp();
-		append(new assem.OPER("mov `d0, " + exp.getValue(), new List<Temp>(t), null));
-		return t;
-	}
-
-	private Temp munchTemp(TEMP exp)
-	{
-		return exp.getTemp();
-	}
-
-	private Temp munchName(NAME exp)
-	{
-		Temp t = new Temp();
-		append(new assem.OPER("mov `d0, " + exp.getLabel().toString(), new List<Temp>(t), null));
-		return t;
-	}
-
-	private Temp munchMem(MEM exp)
-	{
-		Temp t1 = new Temp();
-		Temp t2 = munchExp(exp.getExpression());
-		append(new assem.OPER("mov `d0, [`s0]", new List<Temp>(t1), new List<Temp>(t2)));
-		return t1;
-	}
-
-	private Temp munchEseq(ESEQ exp)
-	{
-		munchStm(exp.getStatement());
-		return munchExp(exp.getExpression());
-	}
-
-	private Temp munchCall(CALL exp)
-	{
-		int nArgs = exp.getArguments().size();
-
-		// Empilha os argumentos de trás pra frente
-		for(int i = nArgs - 1; i >= 0; i--)
-		{
-			append(new assem.OPER("push `s0", null, new List<Temp>(munchExp(exp.getArguments().get(i)))));
-		}
-
-		// Se funcao for um NAME direto, chama, senão avalia a expressao
-		if(exp.getCallable() instanceof tree.NAME)
-		{
-			append(new assem.OPER("call " + ((tree.NAME) exp.getCallable()).getLabel(), frame.calleeDefs(), null));
-		}
-		else
-		{
-			append(new assem.OPER("call `s0", frame.calleeDefs(), new List<Temp>(munchExp(exp.getCallable()))));
-		}
-
-		// Desempilha os argumentos se existir
-		if(nArgs > 0)
-		{
-			append(new assem.OPER("add esp, " + nArgs * frame.wordsize(), new List<Temp>(frame.SP()), new List<Temp>(frame.SP())));
-		}
-
-		// Obtem retorno
-		Temp ret = new Temp();
-		append(new assem.MOVE(ret, frame.RV()));
-		return ret;
-	}
-
-	private Temp munchBinop(BINOP exp)
-	{
-		Exp left = exp.getLeft();
-		Exp right = exp.getRight();
-		Temp temp = new Temp();
-		
-		//Se for multiplicacao ou divisao, joga o temp como eax
-		if(exp.getOperation()==BINOP.DIV || exp.getOperation()==BINOP.TIMES)
-		{
-			temp = Frame.eax;
-		}
-		
-		String operation = ConstantMaps.getBinop(exp.getOperation());
-		//Guarda primeira expressao
-		append(new assem.MOVE(temp, munchExp(left)));
-		
-		if(exp.getRight() instanceof CONST)
-		{
-			append(new assem.OPER(operation + " `d0, " + ((CONST)exp.getRight()).getValue(), new List<Temp>(temp), new List<Temp>(temp)));
-		}
-		else
-		{
-			append(new assem.OPER(operation + " `d0, `u0", new List<Temp>(temp), new List<Temp>(munchExp(right),temp)));
-		}
-		
-		//E no final recupera ele de volta
-		if(exp.getOperation()==BINOP.DIV || exp.getOperation()==BINOP.TIMES)
-		{
-			temp = new Temp();
-			append(new assem.MOVE(temp, Frame.eax));
-		}
-		return temp;
-	}
-	
-	private Temp munchBinopThei(BINOP exp)
-	{
-		Exp left = exp.getLeft();
-		Exp right = exp.getRight();
-		Temp newTemp = new Temp();
-
-		switch(exp.getOperation())
-		{
-			case tree.BINOP.AND:
-			{
-				if(right instanceof tree.CONST)
-				{
-					append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-					append(new assem.OPER("and `d0, " + ((tree.CONST) right).getValue(), new List<Temp>(newTemp), new List<Temp>(newTemp)));
-				}
-				else
-				{
-					append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-					append(new assem.OPER("and `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(right), newTemp)));
-				}
-				break;
-			}
-			case tree.BINOP.ARSHIFT:
-			{
-				append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-				append(new assem.OPER("sar `d0, " + ((tree.CONST) right).getValue(), new List<Temp>(newTemp), new List<Temp>(newTemp)));
-				break;
-			}
-			case tree.BINOP.DIV:
-			{
-				append(new assem.OPER("mov `d0, `u0", new List<Temp>(Frame.eax), new List<Temp>(munchExp(left))));
-				append(new assem.OPER("idiv `u0", new List<Temp>(Frame.eax), new List<Temp>(munchExp(right), Frame.eax)));
-				append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(Frame.eax)));
-				break;
-			}
-			case tree.BINOP.LSHIFT:
-			{
-				append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-				append(new assem.OPER("shl `d0, " + ((tree.CONST) right).getValue(), new List<Temp>(newTemp), new List<Temp>(newTemp)));
-				break;
-			}
-			case tree.BINOP.MINUS:
-			{
-				if(right instanceof tree.CONST)
-				{
-					append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-					append(new assem.OPER("sub `d0, " + ((tree.CONST) right).getValue(), new List<Temp>(newTemp), new List<Temp>(newTemp)));
-				}
-				else
-				{
-					append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-					append(new assem.OPER("sub `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(right), newTemp)));
-				}
-				break;
-			}
-			case tree.BINOP.OR:
-			{
-				if(right instanceof tree.CONST)
-				{
-					append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-					append(new assem.OPER("or `d0, " + ((tree.CONST) right).getValue(), new List<Temp>(newTemp), new List<Temp>(newTemp)));
-				}
-				else
-				{
-					append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-					append(new assem.OPER("or `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(right), newTemp)));
-				}
-				break;
-			}
-			case tree.BINOP.PLUS:
-			{
-				if(right instanceof tree.CONST)
-				{
-					append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-					append(new assem.OPER("add `d0, " + ((tree.CONST) right).getValue(), new List<Temp>(newTemp), new List<Temp>(newTemp)));
-				}
-				else
-				{
-					append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-					append(new assem.OPER("add `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(right), newTemp)));
-				}
-				break;
-			}
-			case tree.BINOP.RSHIFT:
-			{
-				append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-				append(new assem.OPER("shr `d0, " + ((tree.CONST) right).getValue(), new List<Temp>(newTemp), new List<Temp>(newTemp)));
-				break;
-			}
-			case tree.BINOP.TIMES:
-			{
-				append(new assem.OPER("mov `d0, `u0", new List<Temp>(Frame.eax), new List<Temp>(munchExp(left))));
-				append(new assem.OPER("imul `u0", new List<Temp>(Frame.eax), new List<Temp>(munchExp(right), Frame.eax)));
-				append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(Frame.eax)));
-				break;
-			}
-			case tree.BINOP.XOR:
-			{
-				if(right instanceof tree.CONST)
-				{
-					append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-					append(new assem.OPER("xor `d0, " + ((tree.CONST) right).getValue(), new List<Temp>(newTemp), new List<Temp>(newTemp)));
-				}
-				else
-				{
-					append(new assem.OPER("mov `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(left))));
-					append(new assem.OPER("xor `d0, `u0", new List<Temp>(newTemp), new List<Temp>(munchExp(right), newTemp)));
-				}
-				break;
-			}
-		}
-		return newTemp;
-	}
-
-	/** Statements */
-	private void munchSeq(tree.SEQ stm)
-	{
-		munchStm(stm.getLeft());
-		munchStm(stm.getRight());
-	}
-
-	private void munchMove(tree.MOVE stm)
-	{
-		if(stm.getDestination() instanceof TEMP)
-		{
-			append(new assem.MOVE(munchExp(stm.getDestination()), munchExp(stm.getSource())));
-		}
-		else if(stm.getDestination() instanceof MEM)
-		{
-			append(new assem.OPER("mov [`u0], `u1", null, new List<Temp>(munchExp(((tree.MEM)stm.getDestination()).getExpression()), munchExp(stm.getSource()))));
-		}
-		else
-		{
-			throw new Error("MOVE Não reconhecido! dst:" + stm.getDestination() + " | src: " + stm.getSource());
-		}
-	}
-
-	private void munchLabel(tree.LABEL stm)
-	{
-		append(new assem.LABEL(stm.getLabel().toString() + ":", stm.getLabel()));
-	}
-
-	private void munchJump(tree.JUMP stm)
-	{
-		if(stm.getExpression() instanceof tree.NAME)
-		{
-			Label label = ((tree.NAME) stm.getExpression()).getLabel();
-			append(new assem.OPER("jmp `j0", new List<Label>(label)));
-		}
-		else
-		{
-			Temp t = munchExp(stm.getExpression());
-			append(new assem.OPER("jmp `s0", null, new List<Temp>(t, null), stm.getTargets()));
-		}
-	}
-
-	private void munchCjump(tree.CJUMP stm)
-	{
-		Temp leftTemp = munchExp(stm.getLeft());
-		Temp rightTemp = munchExp(stm.getRight());
-
-		append(new assem.OPER("cmp `s0, `s1", null, new List<Temp>(leftTemp, new List<Temp>(rightTemp))));
-
-		String x86Instr = ConstantMaps.getCjump(stm.getOperation());
-		if(x86Instr == null) { throw new Error("CJUMP operacao invalida: " + stm.getOperation()); }
-
-		append(new assem.OPER(x86Instr + " `j0", new List<Label>(stm.getLabelTrue(), new List<Label>(stm.getLabelFalse()))));
-	}
-
-	private void munchExpstm(tree.EXPSTM stm)
-	{
-		munchExp(stm.getExpression());
-	}
 }

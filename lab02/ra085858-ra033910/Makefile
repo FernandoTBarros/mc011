@@ -12,4 +12,4 @@ run:
 
 compile_assembly:
 	nasm -felf32 $(INPUT) -o saida.o
-	gcc saida.o lib/runtime.o -o $(OUTPUT)
+	gcc -m32 saida.o lib/runtime.o -o $(OUTPUT)
